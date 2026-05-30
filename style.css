@@ -5,9 +5,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #2c3e50;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #ecf0f1;
+    background-color: #012169; /* Jalur Gemilang Blue */
+    font-family: 'Arial Black', Gadget, sans-serif;
+    color: #FFCC00; /* Jalur Gemilang Yellow */
 }
 
 .game-container {
@@ -16,20 +16,22 @@ body {
 
 h1 {
     margin-bottom: 10px;
-    font-size: 3rem;
+    font-size: 2rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    text-shadow: 3px 3px 0px #C8102E; /* Red shadow for extra power */
 }
 
 #score {
     font-size: 1.5rem;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 canvas {
-    border: 5px solid #34495e;
-    background-color: #1a1a1a;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 10px solid #C8102E; /* Jalur Gemilang Red */
+    background-color: #f0f0f0;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
     display: block;
     margin: 0 auto;
 }

@@ -20,9 +20,14 @@ let gameOver = false;
 
 function drawGame() {
     if (gameOver) {
-        ctx.fillStyle = "white";
-        ctx.font = "30px Arial";
-        ctx.fillText("sorry lah finish d one", canvas.width / 10, canvas.height / 2);
+        drawMalaysianFlag();
+        ctx.fillStyle = "#FFCC00"; // Yellow
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.font = "bold 40px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("HABIS LAH!", canvas.width / 2, canvas.height / 2);
+        ctx.strokeText("HABIS LAH!", canvas.width / 2, canvas.height / 2);
         playGameOverSound();
         return;
     }
@@ -37,32 +42,46 @@ function drawGame() {
     setTimeout(drawGame, gameSpeed);
 }
 
-let gameOverSoundPlayed = false;
-function playGameOverSound() {
-    if (gameOverSoundPlayed) return;
-    
-    const utterance = new SpeechSynthesisUtterance("aiyo sorry lah game finish d liyao hahaha");
-    utterance.lang = 'ms-MY';
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    window.speechSynthesis.speak(utterance);
-    
-    gameOverSoundPlayed = true;
-}
-
 function clearCanvas() {
-    ctx.fillStyle = "#1a1a1a";
+    ctx.fillStyle = "#f0f0f0";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+function drawMalaysianFlag() {
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Background stripes (14 stripes: 7 red, 7 white)
+    const stripeHeight = h / 14;
+    for (let i = 0; i < 14; i++) {
+        ctx.fillStyle = (i % 2 === 0) ? "#C8102E" : "#FFFFFF";
+        ctx.fillRect(0, i * stripeHeight, w, stripeHeight);
+    }
+
+    // Blue canton
+    ctx.fillStyle = "#012169";
+    ctx.fillRect(0, 0, w / 2, stripeHeight * 8);
+
+    // Yellow crescent/star representation (Simplified)
+    ctx.fillStyle = "#FFCC00";
+    ctx.beginPath();
+    ctx.arc(w / 4, stripeHeight * 4, stripeHeight * 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Cut out to make it look a bit like a crescent
+    ctx.fillStyle = "#012169";
+    ctx.beginPath();
+    ctx.arc(w / 4 + 10, stripeHeight * 4, stripeHeight * 1.8, 0, Math.PI * 2);
+    ctx.fill();
+}
+
 function drawSnake() {
-    ctx.fillStyle = "#2ecc71";
     snake.forEach((part, index) => {
-        // Head is a different color
         if (index === 0) {
-            ctx.fillStyle = "#27ae60";
+            ctx.fillStyle = "#FFCC00"; // Yellow head
         } else {
-            ctx.fillStyle = "#2ecc71";
+            // Alternating Red and White body
+            ctx.fillStyle = (index % 2 === 0) ? "#C8102E" : "#FFFFFF";
         }
         ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
     });
@@ -73,7 +92,7 @@ function moveSnake() {
     snake.unshift(head);
 
     if (head.x === food.x && head.y === food.y) {
-        score += 10;
+        score += 1;
         playEatSound();
         generateFood();
     } else {
@@ -82,19 +101,28 @@ function moveSnake() {
 }
 
 function playEatSound() {
-    // Using Web Speech API to say "Walao"
-    const utterance = new SpeechSynthesisUtterance("Walao");
-    utterance.lang = 'ms-MY'; // Set to Malaysian Malay for the accent
-    utterance.rate = 1.2;      // Slightly faster for a punchier sound
-    utterance.pitch = 1.1;
+    const utterance = new SpeechSynthesisUtterance("Nice lah!");
+    utterance.lang = 'ms-MY';
+    utterance.rate = 1.2;
     window.speechSynthesis.speak(utterance);
+}
+
+let gameOverSoundPlayed = false;
+function playGameOverSound() {
+    if (gameOverSoundPlayed) return;
+    
+    const utterance = new SpeechSynthesisUtterance("Adoi, game finish already lah! Not bad effort lah tharma.");
+    utterance.lang = 'ms-MY';
+    utterance.rate = 1.0;
+    window.speechSynthesis.speak(utterance);
+    
+    gameOverSoundPlayed = true;
 }
 
 function generateFood() {
     food.x = Math.floor(Math.random() * tileCount);
     food.y = Math.floor(Math.random() * tileCount);
 
-    // Make sure food doesn't spawn on snake
     snake.forEach(part => {
         if (part.x === food.x && part.y === food.y) {
             generateFood();
@@ -103,19 +131,17 @@ function generateFood() {
 }
 
 function drawFood() {
-    ctx.fillStyle = "#e74c3c";
+    ctx.fillStyle = "#00A859"; // Banana Leaf Green
     ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 2, gridSize - 2);
 }
 
 function checkCollision() {
     const head = snake[0];
 
-    // Wall collision
     if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
         gameOver = true;
     }
 
-    // Self collision
     for (let i = 1; i < snake.length; i++) {
         if (head.x === snake[i].x && head.y === snake[i].y) {
             gameOver = true;
@@ -124,7 +150,7 @@ function checkCollision() {
 }
 
 function updateScore() {
-    scoreElement.innerText = `Score: ${score}`;
+    scoreElement.innerText = `Nasi Lemak Packets: ${score}`;
 }
 
 window.addEventListener('keydown', e => {
